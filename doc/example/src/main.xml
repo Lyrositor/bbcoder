@@ -32,6 +32,10 @@
                     Contents of slide 2
                 {/slide}
             </accordion>
+            <list option="1">
+                <li>Element 1</li>
+                <li>Element 2</li>
+            </list>
             <include template="infobox">
                 <param name="name">Joe</param>
                 <param name="age"><b>27 years old</b></param>

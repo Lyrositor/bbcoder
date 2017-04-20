@@ -204,6 +204,14 @@ impl<'a> Parser<'a> {
                         None => return Err(format!("Missing 'template' attribute in include")),
                     }
                 }
+                "li" => {
+                    match write!(output, "[*]") {
+                        Err(e) => return Err(format!("Failed to write to output: {}", e)),
+                        _ => (),
+                    }
+                    self.parse_element(child, output, replacements)?;
+                    self.output_text(child.tail(), output, replacements)?;
+                }
                 _ => {
                     // Craft the tag's option attribute
                     let mut options: Vec<String> = Vec::new();

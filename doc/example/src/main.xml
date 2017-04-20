@@ -1,0 +1,42 @@
+<bbxml>
+    <!-- External Includes -->
+    <include src="common.xml" />
+
+    <!-- Class Definitions -->
+    <classes>
+        <class name="pretty-box">
+
+            background: red;
+            border: solid 1px green;
+        </class>
+    </classes>
+
+    <!-- Template Definitions -->
+    <templates>
+        <template name="infobox">
+            <div>
+                Name: {name}<br/>
+                Age: {age}
+            </div>
+        </template>
+    </templates>
+
+    <!-- Content Body -->
+    <body>
+        <div class="pretty-box" option="width: 400px;">This is a <b>pretty</b> box.
+            <accordion>
+                {slide=Slide 1}
+                    Contents of slide 1
+                {/slide}
+                {slide=Slide 2}
+                    Contents of slide 2
+                {/slide}
+            </accordion>
+            <include template="infobox">
+                <param name="name">Joe</param>
+                <param name="age"><b>27 years old</b></param>
+            </include>
+        </div>
+    </body>
+
+</bbxml>

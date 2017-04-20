@@ -36,6 +36,10 @@ impl<'a> Parser<'a> {
             std::io::BufReader::new(std::fs::File::open(root_path).unwrap())).unwrap();
         match root.find("body") {
             Some(body) => {
+                match std::fs::create_dir_all(output_path.parent().unwrap()) {
+                    Err(e) => return Err(format!("Failed to create directory: {}", e)),
+                    _ => (),
+                }
                 let mut output = std::io::BufWriter::new(std::fs::File::create(output_path)
                                                              .unwrap());
                 self.parse_element(body, &mut output, &std::collections::HashMap::new())?;
@@ -267,7 +271,7 @@ impl<'a> Parser<'a> {
                    text: &str,
                    output: &mut std::io::BufWriter<std::fs::File>,
                    replacements: &std::collections::HashMap<String, elementtree::Element>)
-        -> Result<(), String> {
+                   -> Result<(), String> {
         let replacements_re = regex::Regex::new(r"\{([\w-]+)\}").unwrap();
         let compact_text = Parser::compact_text(text, "");
         match replacements_re.captures(&compact_text) {

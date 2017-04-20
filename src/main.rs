@@ -3,8 +3,14 @@ extern crate clap;
 mod parser;
 mod project;
 
+/// The default path to a project's definition file.
 static DEFAULT_PROJECT_PATH: &'static str = "project.xml";
 
+/// Processes command-line arguments and builds the desired target.
+///
+/// The path to the project file can be specified using the `-p` argument.
+/// The build target can be optionally specified as the only position argument; if left unspecified,
+/// the project's default target will be built.
 fn main() {
     // Initialize the argument parser
     let matches = clap::App::new("bbcoder")

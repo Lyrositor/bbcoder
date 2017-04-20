@@ -5,6 +5,7 @@ use project;
 use std;
 use std::io::Write;
 
+/// A BBXML parser which can be used to convert it to BBCode.
 pub struct Parser<'a> {
     classes: std::collections::HashMap<String, String>,
     project: &'a project::Project,
@@ -12,6 +13,7 @@ pub struct Parser<'a> {
 }
 
 impl<'a> Parser<'a> {
+    /// Initializes a new empty parser.
     pub fn new(project: &'a project::Project) -> Parser<'a> {
         Parser {
             classes: std::collections::HashMap::new(),
@@ -20,6 +22,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    /// Parses a BBXML file and outputs its body as BBCode.
     pub fn output_bbcode(&mut self,
                          root_path: &std::path::Path,
                          output_path: &std::path::Path)
@@ -44,6 +47,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    /// Processes a single file for its classes and templates.
     fn process_file(&mut self, file_path: &std::path::Path) -> Result<(), String> {
         let filename = file_path.to_str().unwrap();
 
@@ -92,6 +96,9 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    /// Processes all included files individually, adding their classes and templates.
+    ///
+    // TODO(Lyrositor) This is probably vulnerable to circular dependencies.
     fn process_includes(&mut self, bbxml: &elementtree::Element) -> Result<(), String> {
         for include in bbxml.find_all("include") {
             // Ensure the attribute is there
@@ -115,6 +122,10 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    /// Processes a list of classes, storing their content in a more compact form.
+    ///
+    /// No attempt is made to inspect the content of classes, so they could be any arbitrary
+    /// character data; only newlines are replaced (with whitespace).
     fn process_classes(&mut self, classes: &elementtree::Element) -> Result<(), String> {
         for class in classes.find_all("class") {
             match class.get_attr("name") {
@@ -131,6 +142,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    /// Processes a list of templates, storing their content as an XML element.
     fn process_templates(&mut self, templates: &elementtree::Element) -> Result<(), String> {
         for template in templates.find_all("template") {
             match template.get_attr("name") {
@@ -145,6 +157,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    /// Main parsing function, parses an XML element to convert it to BBCode.
     fn parse_element(&mut self,
                      element: &elementtree::Element,
                      output: &mut std::io::BufWriter<std::fs::File>,
@@ -241,6 +254,9 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    /// Outputs a text string, formatting it and replacing template parameters as required.
+    ///
+    /// Newlines, indentation and extra spaces on the end of lines are deleted.
     fn output_text(&mut self,
                    text: &str,
                    output: &mut std::io::BufWriter<std::fs::File>,
@@ -284,6 +300,7 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
+    /// Replaces all newlines (including preceding and succeeding whitespace) with a replacement.
     fn compact_text(text: &str, replacement: &str) -> String {
         let spaces_re = regex::Regex::new(r"(?:\s*(?:\r?\n)\s*)+").unwrap();
         spaces_re

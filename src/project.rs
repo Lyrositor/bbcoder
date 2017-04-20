@@ -2,8 +2,10 @@ extern crate elementtree;
 
 use std;
 
+/// The default target to run if no target was specified and no default target was user-specified.
 static DEFAULT_TARGET: &'static str = "main";
 
+/// Contains data about a project.
 pub struct Project {
     pub project_directory: std::path::PathBuf,
     pub include: Vec<std::path::PathBuf>,
@@ -12,6 +14,7 @@ pub struct Project {
 }
 
 impl Project {
+    /// Initializes a new empty project.
     pub fn new() -> Project {
         Project {
             project_directory: std::path::PathBuf::new(),
@@ -21,6 +24,9 @@ impl Project {
         }
     }
 
+    /// Loads a project from its definition file.
+    ///
+    /// The definition file is an XML file describing the pro
     pub fn load(&mut self, project_file_path: &std::path::Path) -> Result<(), String> {
         // Load the project's XML file
         let file: std::fs::File = match std::fs::File::open(project_file_path) {

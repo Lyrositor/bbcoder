@@ -1,2 +1,25 @@
 <bbxml>
+    <!-- Class Definitions -->
+    <classes>
+        <class name="yellow">
+            background-color: yellow;
+            color: green;
+            display: inline;
+        </class>
+    </classes>
+
+    <!-- Template Definitions -->
+    <templates>
+        <template name="sidebox">
+            <side>
+                <b>Name:</b> {name}<br />
+                <b>Age:</b> {age}
+                <divide />
+            </side>
+        </template>
+
+        <template name="clear">
+            <div option="clear: both; height: 0; opacity: 0;">CLEAR</div>
+        </template>
+    </templates>
 </bbxml>

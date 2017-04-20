@@ -5,42 +5,42 @@
     <!-- Class Definitions -->
     <classes>
         <class name="pretty-box">
-
-            background: red;
+            background: cyan;
             border: solid 1px green;
+            float: right;
         </class>
     </classes>
 
     <!-- Template Definitions -->
     <templates>
         <template name="infobox">
-            <div>
-                Name: {name}<br/>
-                Age: {age}
+            <div class="pretty-box">
+                <include template="sidebox" />
             </div>
+            <include template="clear" />
         </template>
     </templates>
 
     <!-- Content Body -->
     <body>
-        <div class="pretty-box" option="width: 400px;">This is a <b>pretty</b> box.
-            <accordion>
-                {slide=Slide 1}
-                    Contents of slide 1
-                {/slide}
-                {slide=Slide 2}
-                    Contents of slide 2
-                {/slide}
-            </accordion>
-            <list option="1">
-                <li>Element 1</li>
-                <li>Element 2</li>
-            </list>
-            <include template="infobox">
-                <param name="name">Joe</param>
-                <param name="age"><b>27 years old</b></param>
-            </include>
-        </div>
+        <div class="pretty-box" option="width: 400px;">This is a <b>pretty</b> box.</div>
+        <include template="infobox">
+            <param name="name">Joe</param>
+            <param name="age">21</param>
+        </include>
+        This is normal text. <div class="yellow">This is yellow text.</div>
+        <accordion>
+            {slide=Slide 1}
+                Contents of slide 1
+            {/slide}
+            {slide=Slide 2}
+                Contents of slide 2
+            {/slide}
+        </accordion>
+        <list option="1">
+            <li>Element 1</li>
+            <li>Element 2</li>
+        </list>
     </body>
 
 </bbxml>

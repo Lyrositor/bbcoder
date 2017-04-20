@@ -178,7 +178,7 @@ impl<'a> Parser<'a> {
                         Some(template_name) => {
                             let mut include_replacements:
                             std::collections::HashMap<String, elementtree::Element> =
-                                std::collections::HashMap::new();
+                                replacements.clone();
                             for param in child.find_all("param") {
                                 match param.get_attr("name") {
                                     Some(name) => {
@@ -210,7 +210,6 @@ impl<'a> Parser<'a> {
                         _ => (),
                     }
                     self.parse_element(child, output, replacements)?;
-                    self.output_text(child.tail(), output, replacements)?;
                 }
                 _ => {
                     // Craft the tag's option attribute
@@ -253,10 +252,9 @@ impl<'a> Parser<'a> {
                         Err(e) => return Err(format!("Failed to write to output: {}", e)),
                         _ => (),
                     }
-                    self.output_text(child.tail(), output, replacements)?;
                 }
             }
-
+            self.output_text(child.tail(), output, replacements)?;
         }
 
         Ok(())

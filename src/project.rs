@@ -80,12 +80,17 @@ impl Project {
     ///
     /// The order of lookup for relative paths:
     /// - current project directory
+    /// - including file's directory
     /// - every project include path, in the order in which they were defined, relative to the
     ///   project directory
     /// If the path is absolute, then only an absolute lookup is performed.
-    pub fn find_file(&self, filename: &String) -> Option<std::path::PathBuf> {
+    pub fn find_file(&self,
+                     filename: &String,
+                     dir: &std::path::Path)
+                     -> Option<std::path::PathBuf> {
         let mut possible_paths = vec![std::path::PathBuf::from(filename)];
         if possible_paths.first().unwrap().is_relative() {
+            possible_paths.push(dir.join(filename));
             possible_paths.extend(self.include
                                       .iter()
                                       .map(|include_path| include_path.join(filename)));

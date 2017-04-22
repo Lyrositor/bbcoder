@@ -70,7 +70,7 @@ impl<'a> Parser<'a> {
         }
 
         // Process this file's includes
-        match self.process_includes(&root) {
+        match self.process_includes(&root, &file_path.parent().unwrap()) {
             Err(e) => return Err(format!("'{}': {}", filename, e)),
             _ => (),
         }
@@ -103,13 +103,16 @@ impl<'a> Parser<'a> {
     /// Processes all included files individually, adding their classes and templates.
     ///
     // TODO(Lyrositor) This is probably vulnerable to circular dependencies.
-    fn process_includes(&mut self, bbxml: &elementtree::Element) -> Result<(), String> {
+    fn process_includes(&mut self,
+                        bbxml: &elementtree::Element,
+                        dir: &std::path::Path)
+                        -> Result<(), String> {
         for include in bbxml.find_all("include") {
             // Ensure the attribute is there
             match include.get_attr("src") {
                 Some(src) => {
                     // Attempt to locate the file
-                    match self.project.find_file(&src.to_owned()) {
+                    match self.project.find_file(&src.to_owned(), dir) {
                         Some(path) => {
                             match self.process_file(&path) {
                                 Err(e) => return Err(e),

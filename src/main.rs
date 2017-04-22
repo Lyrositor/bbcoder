@@ -58,7 +58,7 @@ fn main() {
     let filename = &project.targets[&target];
     let output_path = std::path::Path::new("target").join(target + ".txt");
     let mut parser = parser::Parser::new(&project);
-    match project.find_file(filename) {
+    match project.find_file(filename, std::path::Path::new(filename).parent().unwrap()) {
         Some(root_path) => {
             match parser.output_bbcode(&root_path, &output_path) {
                 Err(e) => println!("ERROR: {}", e),

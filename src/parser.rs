@@ -178,7 +178,6 @@ impl<'a> Parser<'a> {
                         Err(e) => return Err(format!("Failed to write to output: {}", e)),
                         _ => (),
                     }
-                    self.output_text(child.tail(), output, replacements)?;
                 }
                 "include" => {
                     match child.get_attr("template") {

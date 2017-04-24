@@ -170,7 +170,19 @@ impl<'a> Parser<'a> {
                      output: &mut std::io::BufWriter<std::fs::File>,
                      replacements: &std::collections::HashMap<String, elementtree::Element>)
                      -> Result<(), String> {
-        self.output_text(element.text(), output, replacements)?;
+        // Check if this element is plain or not
+        let compact = match element.get_attr("plain") {
+            Some(plain) => {
+                match plain {
+                    "true" => false,
+                    "1" => false,
+                    _ => true,
+                }
+            }
+            None => true,
+        };
+
+        self.output_text(element.text(), output, replacements, compact)?;
         for child in element.children() {
             match child.tag().name() {
                 "br" => {
@@ -260,7 +272,7 @@ impl<'a> Parser<'a> {
                     }
                 }
             }
-            self.output_text(child.tail(), output, replacements)?;
+            self.output_text(child.tail(), output, replacements, compact)?;
         }
 
         Ok(())
@@ -272,13 +284,17 @@ impl<'a> Parser<'a> {
     fn output_text(&mut self,
                    text: &str,
                    output: &mut std::io::BufWriter<std::fs::File>,
-                   replacements: &std::collections::HashMap<String, elementtree::Element>)
+                   replacements: &std::collections::HashMap<String, elementtree::Element>,
+                   compact: bool)
                    -> Result<(), String> {
         let replacements_re = regex::Regex::new(r"\{([\w-]+)\}").unwrap();
-        let compact_text = Parser::compact_text(text, "");
-        match replacements_re.captures(&compact_text) {
+        let mut formatted_text = text.to_owned();
+        if compact {
+            formatted_text = Parser::compact_text(text, "");
+        }
+        match replacements_re.captures(&formatted_text) {
             Some(params) => {
-                let normal_texts = replacements_re.split(&compact_text);
+                let normal_texts = replacements_re.split(&formatted_text);
                 let mut i = 1;
                 for normal_text in normal_texts {
                     match output.write(normal_text.as_bytes()) {
@@ -310,7 +326,7 @@ impl<'a> Parser<'a> {
                 }
             }
             None => {
-                match output.write(compact_text.as_bytes()) {
+                match output.write(formatted_text.as_bytes()) {
                     Err(e) => return Err(format!("Failed to write to output: {}", e)),
                     _ => (),
                 }

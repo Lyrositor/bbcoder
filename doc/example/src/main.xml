@@ -41,6 +41,18 @@
             <li>Element 1</li>
             <li>Element 2</li>
         </list>
+        <code plain="true">
+<![CDATA[
+test
+<bbxml>
+    <body>
+        <b>Bold code</b>
+    </body>
+</bbxml>]]></code>
+        <code plain="true">[div]
+    test
+    [b]test2[/b]
+[/div]</code>
     </body>
 
 </bbxml>

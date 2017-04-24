@@ -294,7 +294,14 @@ impl<'a> Parser<'a> {
                                                        &std::collections::HashMap::new())?;
                                     ()
                                 }
-                                None => (),
+                                None => {
+                                    match write!(output, "{{{}}}", param.as_str()) {
+                                        Err(e) => {
+                                            return Err(format!("Failed to write to output: {}", e))
+                                        }
+                                        _ => (),
+                                    }
+                                }
                             }
                         }
                         None => (),

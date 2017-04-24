@@ -26,7 +26,7 @@
         <div class="pretty-box" option="width: 400px;">This is a <b>pretty</b> box.</div>
         <include template="infobox">
             <param name="name">Joe</param>
-            <param name="age">21</param>
+            <!--<param name="age">21</param>-->
         </include>
         This is normal text. <div class="yellow">This is yellow text.</div>
         <accordion>

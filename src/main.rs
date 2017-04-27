@@ -14,7 +14,7 @@ static DEFAULT_PROJECT_PATH: &'static str = "project.xml";
 fn main() {
     // Initialize the argument parser
     let matches = clap::App::new("bbcoder")
-        .version("0.1.1")
+        .version("0.1.2")
         .author("Lyrositor")
         .about("BBCode generation tool")
         .arg(clap::Arg::with_name("path")

@@ -2,7 +2,7 @@
     <include>
         <path>include/</path>
     </include>
-    <targets default="example-main">
+    <targets>
         <target name="example-main" src="src/main.xml" />
     </targets>
 </project>

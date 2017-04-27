@@ -201,9 +201,13 @@ impl<'a> Parser<'a> {
                     // The `template`'s abbreviation is `t`
                     let template_name = match child.get_attr("template") {
                         Some(name) => name,
-                        None => match child.get_attr("t") {
-                            Some(name) => name,
-                            None => return Err(format!("Missing 'template' attribute in include")),
+                        None => {
+                            match child.get_attr("t") {
+                                Some(name) => name,
+                                None => {
+                                    return Err(format!("Missing 'template' attribute in include"));
+                                }
+                            }
                         }
                     };
 
@@ -216,17 +220,12 @@ impl<'a> Parser<'a> {
                                 include_replacements.insert(name.to_owned(), param.clone());
                                 ()
                             }
-                            None => {
-                                return Err("Missing 'name' attribute in param".to_owned())
-                            }
+                            None => return Err("Missing 'name' attribute in param".to_owned()),
                         }
                     }
                     let template = match self.templates.get(template_name) {
                             Some(template) => template,
-                            None => {
-                                return Err(format!("Template '{}' not found",
-                                                   template_name))
-                            }
+                            None => return Err(format!("Template '{}' not found", template_name)),
                         }
                         .clone();
                     self.parse_element(&template, output, &include_replacements)?;
@@ -246,9 +245,11 @@ impl<'a> Parser<'a> {
                     // The `class` attribute's abbreviation is `c`
                     let classes = match child.get_attr("class") {
                         Some(classes) => classes,
-                        None => match child.get_attr("c") {
-                            Some(classes) => classes,
-                            None => "",
+                        None => {
+                            match child.get_attr("c") {
+                                Some(classes) => classes,
+                                None => "",
+                            }
                         }
                     };
                     for class in classes.split_whitespace() {
@@ -262,9 +263,11 @@ impl<'a> Parser<'a> {
                     // The `option` attribute's abbreviation is `o`
                     match child.get_attr("option") {
                         Some(option) => options.push(option.to_owned()),
-                        None => match child.get_attr("o") {
-                            Some(option) => options.push(option.to_owned()),
-                            None => (),
+                        None => {
+                            match child.get_attr("o") {
+                                Some(option) => options.push(option.to_owned()),
+                                None => (),
+                            }
                         }
                     };
 

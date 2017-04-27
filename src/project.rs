@@ -3,7 +3,7 @@ extern crate elementtree;
 use std;
 
 /// The default target to run if no target was specified and no default target was user-specified.
-static DEFAULT_TARGET: &'static str = "main";
+pub static ALL_TARGETS: &'static str = "_all";
 
 /// Contains data about a project.
 pub struct Project {
@@ -70,7 +70,7 @@ impl Project {
         // Load the default target, replacing it by the default "default target" if not found
         self.default_target = targets
             .get_attr("default")
-            .unwrap_or(DEFAULT_TARGET)
+            .unwrap_or(ALL_TARGETS)
             .to_owned();
 
         Ok(())

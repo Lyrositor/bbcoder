@@ -184,7 +184,12 @@ impl<'a> Parser<'a> {
 
         self.output_text(element.text(), output, replacements, compact)?;
         for child in element.children() {
-            match child.tag().name() {
+            let name = match child.tag().name() {
+                "d" => "div",
+                "in" => "include",
+                _ => child.tag().name(),
+            };
+            match name {
                 "br" => {
                     match output.write("\n".as_bytes()) {
                         Err(e) => return Err(format!("Failed to write to output: {}", e)),
@@ -192,35 +197,39 @@ impl<'a> Parser<'a> {
                     }
                 }
                 "include" => {
-                    match child.get_attr("template") {
-                        Some(template_name) => {
-                            let mut include_replacements:
-                            std::collections::HashMap<String, elementtree::Element> =
-                                replacements.clone();
-                            for param in child.find_all("param") {
-                                match param.get_attr("name") {
-                                    Some(name) => {
-                                        include_replacements.insert(name.to_owned(), param.clone());
-                                        ()
-                                    }
-                                    None => {
-                                        return Err("Missing 'name' attribute in param".to_owned())
-                                    }
-                                }
-                            }
-                            let template = match self.templates.get(template_name) {
-                                    Some(template) => template,
-                                    None => {
-                                        return Err(format!("Template '{}' not found",
-                                                           template_name))
-                                    }
-                                }
-                                .clone();
-                            self.parse_element(&template, output, &include_replacements)?;
-                            ()
+                    // Get the template's name
+                    // The `template`'s abbreviation is `t`
+                    let template_name = match child.get_attr("template") {
+                        Some(name) => name,
+                        None => match child.get_attr("t") {
+                            Some(name) => name,
+                            None => return Err(format!("Missing 'template' attribute in include")),
                         }
-                        None => return Err(format!("Missing 'template' attribute in include")),
+                    };
+
+                    let mut include_replacements:
+                    std::collections::HashMap<String, elementtree::Element> =
+                        replacements.clone();
+                    for param in child.find_all("param").chain(child.find_all("p")) {
+                        match param.get_attr("name") {
+                            Some(name) => {
+                                include_replacements.insert(name.to_owned(), param.clone());
+                                ()
+                            }
+                            None => {
+                                return Err("Missing 'name' attribute in param".to_owned())
+                            }
+                        }
                     }
+                    let template = match self.templates.get(template_name) {
+                            Some(template) => template,
+                            None => {
+                                return Err(format!("Template '{}' not found",
+                                                   template_name))
+                            }
+                        }
+                        .clone();
+                    self.parse_element(&template, output, &include_replacements)?;
                 }
                 "li" => {
                     match write!(output, "[*]") {
@@ -232,24 +241,35 @@ impl<'a> Parser<'a> {
                 _ => {
                     // Craft the tag's option attribute
                     let mut options: Vec<String> = Vec::new();
-                    match child.get_attr("class") {
-                        Some(classes) => {
-                            for class in classes.split_whitespace() {
-                                match self.classes.get(class) {
-                                    Some(class_body) => options.push(class_body.clone()),
-                                    None => (),
-                                };
-                            }
+
+                    // Get this element's classes, if any
+                    // The `class` attribute's abbreviation is `c`
+                    let classes = match child.get_attr("class") {
+                        Some(classes) => classes,
+                        None => match child.get_attr("c") {
+                            Some(classes) => classes,
+                            None => "",
                         }
-                        None => (),
-                    }
-                    match child.get_attr("option") {
-                        Some(option) => options.push(option.to_owned()),
-                        None => (),
+                    };
+                    for class in classes.split_whitespace() {
+                        match self.classes.get(class) {
+                            Some(class_body) => options.push(class_body.clone()),
+                            None => (),
+                        };
                     }
 
+                    // Get this element's option, if specified
+                    // The `option` attribute's abbreviation is `o`
+                    match child.get_attr("option") {
+                        Some(option) => options.push(option.to_owned()),
+                        None => match child.get_attr("o") {
+                            Some(option) => options.push(option.to_owned()),
+                            None => (),
+                        }
+                    };
+
                     // Create the opening tag
-                    match write!(output, "[{}", child.tag().name().to_uppercase()) {
+                    match write!(output, "[{}", name.to_uppercase()) {
                         Err(e) => return Err(format!("Failed to write to output: {}", e)),
                         _ => (),
                     }
@@ -266,7 +286,7 @@ impl<'a> Parser<'a> {
 
                     // Write the content of the element and any text that immediately follows it
                     self.parse_element(child, output, replacements)?;
-                    match write!(output, "[/{}]", child.tag().name().to_uppercase()) {
+                    match write!(output, "[/{}]", name.to_uppercase()) {
                         Err(e) => return Err(format!("Failed to write to output: {}", e)),
                         _ => (),
                     }

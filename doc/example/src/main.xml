@@ -41,6 +41,7 @@
             <li>Element 1</li>
             <li>Element 2</li>
         </list>
+        <d c="pretty-box" o="width: 500px;">Abbreviation</d>
         <code plain="true">
 <![CDATA[
 test

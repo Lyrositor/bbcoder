@@ -330,7 +330,7 @@ impl<'a> Parser<'a> {
                                 Some(replacement) => {
                                     self.parse_element(replacement,
                                                        output,
-                                                       &std::collections::HashMap::new())?;
+                                                       replacements)?;
                                     ()
                                 }
                                 None => {

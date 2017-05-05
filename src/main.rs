@@ -14,7 +14,7 @@ static DEFAULT_PROJECT_PATH: &'static str = "project.xml";
 fn main() {
     // Initialize the argument parser
     let matches = clap::App::new("bbcoder")
-        .version("0.1.2")
+        .version("0.2.0")
         .author("Lyrositor")
         .about("BBCode generation tool")
         .arg(clap::Arg::with_name("path")
@@ -22,10 +22,6 @@ fn main() {
                  .long("path")
                  .default_value(DEFAULT_PROJECT_PATH)
                  .help("Path to the BBCoder project file"))
-        /*.arg(clap::Arg::with_name("watch")
-                 .short("w")
-                 .long("watch")
-                 .help("Watch for changes to a project and serve the result on port 8080"))*/
         .arg(clap::Arg::with_name("TARGET")
                  .index(1)
                  .help("The target to build (default: all)"))

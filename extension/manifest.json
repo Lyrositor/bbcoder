@@ -1,15 +1,21 @@
 {
   "manifest_version": 2,
 
-  "name": "bbcoder for RPNation",
-  "description": "Extension for RPNation which creates a bridge between your browser and bbcoder.",
-  "version": "0.1",
+  "name": "bbcoder for RpNation",
+  "short_name": "bbcoder",
+  "author": "Lyrositor",
+  "description": "Extension for RpNation which adds an enhanced BBCode/BBXML editor",
+  "homepage_url": "https://github.com/Lyrositor/bbcoder",
+  "version": "0.2",
+
   "icons": { "512": "images/bbcoder.png" },
+
   "permissions": [
     "activeTab",
     "https://www.rpnation.com/",
     "https://www.lyros.net/"
   ],
+
   "content_scripts": [
     {
       "matches": [
@@ -18,8 +24,21 @@
         "https://www.rpnation.com/posts/*",
         "https://www.rpnation.com/conversations/*"
       ],
-      "css": ["lib/codemirror.css"],
-      "js": ["lib/codemirror.js", "lib/closetag.js", "lib/css.js", "lib/multiplex.js", "lib/xml.js", "reply.js"]
+      "css": ["lib/codemirror.css", "content.css"],
+      "js": [
+        "lib/jquery-3.2.1.min.js",
+        "lib/codemirror.js",
+        "lib/closebrackets.js",
+        "lib/closetag.js",
+        "lib/css.js",
+        "lib/matchbrackets.js",
+        "lib/matchtags.js",
+        "lib/multiplex.js",
+        "lib/xml.js",
+        "lib/xml-fold.js",
+        "bbcode.js",
+        "content.js"
+      ]
     }
   ]
 }

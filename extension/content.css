@@ -1,0 +1,19 @@
+#mode-btn-container {
+    text-align: right;
+}
+
+.mode-btn {
+    border-radius: 0 !important;
+}
+
+.mode-btn:disabled {
+    background-color: transparent;
+    color: #747474;
+    pointer-events: none;
+}
+
+.mode-btn:disabled:hover {
+    background-color: transparent;
+    color: #747474;
+    pointer-events: none;
+}

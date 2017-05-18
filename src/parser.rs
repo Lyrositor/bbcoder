@@ -277,10 +277,11 @@ impl<'a> Parser<'a> {
                         _ => (),
                     }
                     if !options.is_empty() {
-                        match write!(output, "={}", options.join("").trim()) {
+                        match write!(output, "=") {
                             Err(e) => return Err(format!("Failed to write to output: {}", e)),
                             _ => (),
                         }
+                        self.output_text(options.join("").trim(), output, replacements, false)?;
                     }
                     match write!(output, "]") {
                         Err(e) => return Err(format!("Failed to write to output: {}", e)),
